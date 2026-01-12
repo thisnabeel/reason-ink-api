@@ -8,10 +8,16 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  resources :concepts
+  resources :concepts do
+    member do
+      post :generate_experiment
+    end
+  end
   resources :abstractions
   resources :quiz_sets
   resources :quizzes
   resources :quiz_choices
   resources :scripts
+  resources :experiments
+  resources :concept_experiments
 end

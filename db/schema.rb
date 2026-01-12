@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_11_133308) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_12_051824) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -27,6 +27,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_11_133308) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "concept_experiments", force: :cascade do |t|
+    t.bigint "concept_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "experiment_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["concept_id"], name: "index_concept_experiments_on_concept_id"
+    t.index ["experiment_id"], name: "index_concept_experiments_on_experiment_id"
+  end
+
   create_table "concepts", force: :cascade do |t|
     t.string "avatar_url"
     t.integer "concept_id"
@@ -37,6 +46,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_11_133308) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["concept_id"], name: "index_concepts_on_concept_id"
+  end
+
+  create_table "experiments", force: :cascade do |t|
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.string "title"
+    t.datetime "updated_at", null: false
   end
 
   create_table "quiz_choices", force: :cascade do |t|
@@ -83,5 +99,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_11_133308) do
     t.index ["scriptable_type", "scriptable_id"], name: "index_scripts_on_scriptable_type_and_scriptable_id"
   end
 
+  add_foreign_key "concept_experiments", "concepts"
+  add_foreign_key "concept_experiments", "experiments"
   add_foreign_key "quiz_choices", "quizzes"
 end

@@ -8,6 +8,10 @@ class Concept < ApplicationRecord
   has_many :quiz_sets, as: :quiz_setable, dependent: :destroy
   has_many :quizzes, as: :quizable, dependent: :destroy
   has_many :scripts, as: :scriptable, dependent: :destroy
+  
+  # Many-to-many association with experiments
+  has_many :concept_experiments, dependent: :destroy
+  has_many :experiments, through: :concept_experiments
 
   # Enum for concept_type
   enum :concept_type, {
