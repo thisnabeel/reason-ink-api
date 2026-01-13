@@ -1,9 +1,15 @@
 class ConceptsController < ApplicationController
-  before_action :set_concept, only: [:show, :update, :destroy, :generate_experiment]
+  before_action :set_concept, only: [:show, :update, :destroy, :generate_experiment, :generate_phrases]
 
   # GET /concepts
   def index
     @concepts = Concept.all
+    render json: @concepts
+  end
+
+  # GET /concepts/timeline
+  def timeline
+    @concepts = Concept.where.not(end_year: nil).order(end_year: :asc)
     render json: @concepts
   end
 
@@ -13,6 +19,7 @@ class ConceptsController < ApplicationController
       include: [
         :abstractions,
         :scripts,
+        :phrases,
         :child_concepts,
         :experiments,
         {
@@ -57,7 +64,8 @@ class ConceptsController < ApplicationController
   # POST /concepts/:id/generate_experiment
   def generate_experiment
     begin
-      @experiment = Experiment.generate_for_concept(@concept)
+      prompt = params[:prompt] || nil
+      @experiment = Experiment.generate_for_concept(@concept, prompt)
       
       if @experiment.save
         # Link the experiment to the concept
@@ -69,6 +77,17 @@ class ConceptsController < ApplicationController
       else
         render json: { errors: @experiment.errors.full_messages }, status: :unprocessable_entity
       end
+    rescue StandardError => e
+      render json: { error: e.message }, status: :unprocessable_entity
+    end
+  end
+
+  # POST /concepts/:id/generate_phrases
+  def generate_phrases
+    begin
+      prompt = params[:prompt] || "give me some 5 one-liners that show up as modern day trickle downs within laymen for the philsophical concepts of #{@concept.title}"
+      @phrases = Phrase.generate_for_concept(@concept, prompt)
+      render json: @phrases, status: :created
     rescue StandardError => e
       render json: { error: e.message }, status: :unprocessable_entity
     end

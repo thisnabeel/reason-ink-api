@@ -9,6 +9,9 @@ class Concept < ApplicationRecord
   has_many :quizzes, as: :quizable, dependent: :destroy
   has_many :scripts, as: :scriptable, dependent: :destroy
   
+  # Direct associations
+  has_many :phrases, dependent: :destroy
+  
   # Many-to-many association with experiments
   has_many :concept_experiments, dependent: :destroy
   has_many :experiments, through: :concept_experiments

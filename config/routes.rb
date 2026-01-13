@@ -11,9 +11,14 @@ Rails.application.routes.draw do
   resources :concepts do
     member do
       post :generate_experiment
+      post :generate_phrases
+    end
+    collection do
+      get :timeline
     end
   end
   resources :abstractions
+  resources :phrases
   resources :quiz_sets
   resources :quizzes
   resources :quiz_choices
