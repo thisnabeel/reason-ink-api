@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     member do
       post :generate_experiment
       post :generate_phrases
+      post :generate_example
     end
     collection do
       get :timeline
@@ -25,4 +26,5 @@ Rails.application.routes.draw do
   resources :scripts
   resources :experiments
   resources :concept_experiments
+  resources :examples
 end

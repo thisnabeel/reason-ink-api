@@ -11,6 +11,7 @@ class Concept < ApplicationRecord
   
   # Direct associations
   has_many :phrases, dependent: :destroy
+  has_many :examples, dependent: :destroy
   
   # Many-to-many association with experiments
   has_many :concept_experiments, dependent: :destroy

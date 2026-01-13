@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_13_004932) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_13_085717) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -46,6 +46,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_004932) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["concept_id"], name: "index_concepts_on_concept_id"
+  end
+
+  create_table "examples", force: :cascade do |t|
+    t.text "body"
+    t.bigint "concept_id", null: false
+    t.datetime "created_at", null: false
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.index ["concept_id"], name: "index_examples_on_concept_id"
   end
 
   create_table "experiments", force: :cascade do |t|
@@ -110,6 +119,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_004932) do
 
   add_foreign_key "concept_experiments", "concepts"
   add_foreign_key "concept_experiments", "experiments"
+  add_foreign_key "examples", "concepts"
   add_foreign_key "phrases", "concepts"
   add_foreign_key "quiz_choices", "quizzes"
 end

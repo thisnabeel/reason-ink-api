@@ -1,5 +1,5 @@
 class ConceptsController < ApplicationController
-  before_action :set_concept, only: [:show, :update, :destroy, :generate_experiment, :generate_phrases]
+  before_action :set_concept, only: [:show, :update, :destroy, :generate_experiment, :generate_phrases, :generate_example]
 
   # GET /concepts
   def index
@@ -20,6 +20,7 @@ class ConceptsController < ApplicationController
         :abstractions,
         :scripts,
         :phrases,
+        :examples,
         :child_concepts,
         :experiments,
         {
@@ -88,6 +89,22 @@ class ConceptsController < ApplicationController
       prompt = params[:prompt] || "give me some 5 one-liners that show up as modern day trickle downs within laymen for the philsophical concepts of #{@concept.title}"
       @phrases = Phrase.generate_for_concept(@concept, prompt)
       render json: @phrases, status: :created
+    rescue StandardError => e
+      render json: { error: e.message }, status: :unprocessable_entity
+    end
+  end
+
+  # POST /concepts/:id/generate_example
+  def generate_example
+    begin
+      prompt = params[:prompt] || nil
+      @example = Example.generate_for_concept(@concept, prompt)
+      
+      if @example.save
+        render json: @example, status: :created
+      else
+        render json: { errors: @example.errors.full_messages }, status: :unprocessable_entity
+      end
     rescue StandardError => e
       render json: { error: e.message }, status: :unprocessable_entity
     end
