@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   resources :abstractions
   resources :phrases
   resources :quiz_sets
+  resources :quiz_set_concepts
   resources :quizzes
   resources :quiz_choices
   resources :scripts

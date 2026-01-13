@@ -16,6 +16,10 @@ class Concept < ApplicationRecord
   # Many-to-many association with experiments
   has_many :concept_experiments, dependent: :destroy
   has_many :experiments, through: :concept_experiments
+  
+  # Many-to-many association with quiz_sets
+  has_many :quiz_set_concepts, dependent: :destroy
+  has_many :quiz_sets, through: :quiz_set_concepts
 
   # Enum for concept_type
   enum :concept_type, {

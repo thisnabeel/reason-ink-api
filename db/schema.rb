@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_13_085717) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_13_193314) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -83,6 +83,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_085717) do
     t.index ["quiz_id"], name: "index_quiz_choices_on_quiz_id"
   end
 
+  create_table "quiz_set_concepts", force: :cascade do |t|
+    t.bigint "concept_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "quiz_set_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["concept_id"], name: "index_quiz_set_concepts_on_concept_id"
+    t.index ["quiz_set_id"], name: "index_quiz_set_concepts_on_quiz_set_id"
+  end
+
   create_table "quiz_sets", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
@@ -122,4 +131,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_085717) do
   add_foreign_key "examples", "concepts"
   add_foreign_key "phrases", "concepts"
   add_foreign_key "quiz_choices", "quizzes"
+  add_foreign_key "quiz_set_concepts", "concepts"
+  add_foreign_key "quiz_set_concepts", "quiz_sets"
 end

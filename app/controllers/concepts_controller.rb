@@ -25,11 +25,14 @@ class ConceptsController < ApplicationController
         :experiments,
         {
           quiz_sets: {
-            include: {
-              quizzes: {
-                include: :quiz_choices
+            include: [
+              :concepts,
+              {
+                quizzes: {
+                  include: :quiz_choices
+                }
               }
-            }
+            ]
           }
         }
       ]

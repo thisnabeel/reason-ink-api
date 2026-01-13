@@ -9,7 +9,7 @@ class QuizSetsController < ApplicationController
 
   # GET /quiz_sets/:id
   def show
-    render json: @quiz_set
+    render json: @quiz_set.as_json(include: [:concepts])
   end
 
   # POST /quiz_sets
@@ -17,7 +17,14 @@ class QuizSetsController < ApplicationController
     @quiz_set = QuizSet.new(quiz_set_params)
 
     if @quiz_set.save
-      render json: @quiz_set, status: :created
+      # Automatically add the parent concept if quiz_setable is a Concept
+      if @quiz_set.quiz_setable_type == 'Concept'
+        QuizSetConcept.create(
+          quiz_set: @quiz_set,
+          concept: @quiz_set.quiz_setable
+        )
+      end
+      render json: @quiz_set.as_json(include: [:concepts]), status: :created
     else
       render json: { errors: @quiz_set.errors.full_messages }, status: :unprocessable_entity
     end
