@@ -28,4 +28,5 @@ Rails.application.routes.draw do
   resources :experiments
   resources :concept_experiments
   resources :examples
+  resources :chapters
 end

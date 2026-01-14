@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_13_193314) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_14_001735) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_193314) do
     t.string "preview"
     t.string "source_url"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "chapters", force: :cascade do |t|
+    t.text "body"
+    t.integer "chapter_id"
+    t.datetime "created_at", null: false
+    t.text "notes"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.text "youtube_url"
+    t.index ["chapter_id"], name: "index_chapters_on_chapter_id"
   end
 
   create_table "concept_experiments", force: :cascade do |t|
