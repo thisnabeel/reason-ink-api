@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  mount ActionCable.server => '/cable'
+
+  devise_for :users, controllers: {
+    sessions: 'users/sessions',
+    registrations: 'users/registrations'
+  }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -29,4 +35,15 @@ Rails.application.routes.draw do
   resources :concept_experiments
   resources :examples
   resources :chapters
+
+  resources :chat_rooms, only: [:index, :show, :create] do
+    member do
+      post :fetch_random_experiment
+    end
+    resources :chat_messages, only: [:index, :create]
+  end
+
+  post '/lobby/join' => 'lobby#join'
+  post '/lobby/leave' => 'lobby#leave'
+  get '/lobby/status' => 'lobby#status'
 end

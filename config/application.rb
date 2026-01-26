@@ -19,7 +19,10 @@ module MyApi
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
-        resource '*', :headers => :any, :methods => [:get, :put, :post, :patch, :options, :delete]
+        resource '*', 
+          headers: :any, 
+          methods: [:get, :put, :post, :patch, :options, :delete],
+          expose: ['X-User-Email', 'X-User-Token']
       end
     end
 
@@ -35,5 +38,8 @@ module MyApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # Enable ActionCable for real-time features
+    config.action_cable.mount_path = '/cable'
   end
 end

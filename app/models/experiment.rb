@@ -1,6 +1,8 @@
 class Experiment < ApplicationRecord
   has_many :concept_experiments, dependent: :destroy
   has_many :concepts, through: :concept_experiments
+  has_many :chat_rooms, as: :chatroomable, dependent: :destroy
+  has_many :lobby_entries, as: :chatroomable, dependent: :destroy
   
   validates :title, presence: true
 

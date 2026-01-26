@@ -17,6 +17,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 gem 'figaro'
 gem 'ruby-openai', '~> 4.2'
+gem 'devise'
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"

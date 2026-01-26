@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_14_001735) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_26_025846) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,6 +36,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_14_001735) do
     t.datetime "updated_at", null: false
     t.text "youtube_url"
     t.index ["chapter_id"], name: "index_chapters_on_chapter_id"
+  end
+
+  create_table "chat_messages", force: :cascade do |t|
+    t.bigint "chat_room_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.string "message_type"
+    t.text "metadata"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["chat_room_id"], name: "index_chat_messages_on_chat_room_id"
+    t.index ["user_id"], name: "index_chat_messages_on_user_id"
+  end
+
+  create_table "chat_rooms", force: :cascade do |t|
+    t.bigint "chatroomable_id", null: false
+    t.string "chatroomable_type", null: false
+    t.datetime "created_at", null: false
+    t.bigint "current_experiment_id"
+    t.string "status", default: "waiting"
+    t.datetime "updated_at", null: false
+    t.bigint "user1_id", null: false
+    t.bigint "user2_id"
+    t.index ["chatroomable_type", "chatroomable_id"], name: "index_chat_rooms_on_chatroomable"
+    t.index ["current_experiment_id"], name: "index_chat_rooms_on_current_experiment_id"
+    t.index ["user1_id"], name: "index_chat_rooms_on_user1_id"
+    t.index ["user2_id"], name: "index_chat_rooms_on_user2_id"
   end
 
   create_table "concept_experiments", force: :cascade do |t|
@@ -73,6 +100,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_14_001735) do
     t.datetime "created_at", null: false
     t.string "title"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "lobby_entries", force: :cascade do |t|
+    t.bigint "chatroomable_id", null: false
+    t.string "chatroomable_type", null: false
+    t.datetime "created_at", null: false
+    t.string "status", default: "waiting"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["chatroomable_type", "chatroomable_id"], name: "index_lobby_entries_on_chatroomable"
+    t.index ["user_id"], name: "index_lobby_entries_on_user_id"
   end
 
   create_table "phrases", force: :cascade do |t|
@@ -137,9 +175,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_14_001735) do
     t.index ["scriptable_type", "scriptable_id"], name: "index_scripts_on_scriptable_type_and_scriptable_id"
   end
 
+  create_table "users", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at"
+    t.string "reset_password_token"
+    t.json "tokens"
+    t.datetime "updated_at", null: false
+    t.string "username"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
+  end
+
+  add_foreign_key "chat_messages", "chat_rooms"
+  add_foreign_key "chat_messages", "users"
+  add_foreign_key "chat_rooms", "experiments", column: "current_experiment_id"
+  add_foreign_key "chat_rooms", "users", column: "user1_id"
+  add_foreign_key "chat_rooms", "users", column: "user2_id"
   add_foreign_key "concept_experiments", "concepts"
   add_foreign_key "concept_experiments", "experiments"
   add_foreign_key "examples", "concepts"
+  add_foreign_key "lobby_entries", "users"
   add_foreign_key "phrases", "concepts"
   add_foreign_key "quiz_choices", "quizzes"
   add_foreign_key "quiz_set_concepts", "concepts"
