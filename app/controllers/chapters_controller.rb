@@ -1,15 +1,15 @@
 class ChaptersController < ApplicationController
-  before_action :set_chapter, only: [:show, :update, :destroy]
+  before_action :set_chapter, only: [:show, :update, :destroy, :generate_notes]
 
   # GET /chapters
   def index
-    @chapters = Chapter.all
+    @chapters = Chapter.includes(:highlights).all
     render json: @chapters
   end
 
   # GET /chapters/:id
   def show
-    render json: @chapter.as_json(include: :child_chapters)
+    render json: @chapter.as_json(include: [:child_chapters, :highlights])
   end
 
   # POST /chapters
@@ -17,7 +17,7 @@ class ChaptersController < ApplicationController
     @chapter = Chapter.new(chapter_params)
 
     if @chapter.save
-      render json: @chapter, status: :created
+      render json: @chapter.as_json(include: :highlights), status: :created
     else
       render json: { errors: @chapter.errors.full_messages }, status: :unprocessable_entity
     end
@@ -26,7 +26,7 @@ class ChaptersController < ApplicationController
   # PATCH/PUT /chapters/:id
   def update
     if @chapter.update(chapter_params)
-      render json: @chapter
+      render json: @chapter.as_json(include: :highlights)
     else
       render json: { errors: @chapter.errors.full_messages }, status: :unprocessable_entity
     end
@@ -38,10 +38,18 @@ class ChaptersController < ApplicationController
     head :no_content
   end
 
+  # POST /chapters/:id/generate_notes
+  def generate_notes
+    @chapter.generate_notes!(params[:prompt])
+    render json: @chapter.as_json(include: :highlights)
+  rescue StandardError => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
   private
 
   def set_chapter
-    @chapter = Chapter.find(params[:id])
+    @chapter = Chapter.includes(:highlights).find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Chapter not found" }, status: :not_found
   end

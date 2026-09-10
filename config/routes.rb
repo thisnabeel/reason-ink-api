@@ -34,7 +34,13 @@ Rails.application.routes.draw do
   resources :experiments
   resources :concept_experiments
   resources :examples
-  resources :chapters
+  resources :chapters do
+    member do
+      post :generate_notes
+    end
+    resources :highlights, only: [:index, :create]
+  end
+  resources :highlights, only: [:index, :show, :update, :destroy]
 
   resources :chat_rooms, only: [:index, :show, :create] do
     member do

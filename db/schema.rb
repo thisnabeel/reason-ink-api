@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_26_025846) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_10_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -100,6 +100,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_025846) do
     t.datetime "created_at", null: false
     t.string "title"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "highlights", force: :cascade do |t|
+    t.bigint "chapter_id", null: false
+    t.datetime "created_at", null: false
+    t.float "end_time", default: 0.0, null: false
+    t.integer "position", default: 0, null: false
+    t.float "start_time", default: 0.0, null: false
+    t.string "title"
+    t.text "transcript"
+    t.datetime "updated_at", null: false
+    t.index ["chapter_id", "end_time"], name: "index_highlights_on_chapter_id_and_end_time"
+    t.index ["chapter_id", "position"], name: "index_highlights_on_chapter_id_and_position"
+    t.index ["chapter_id", "start_time"], name: "index_highlights_on_chapter_id_and_start_time"
+    t.index ["chapter_id"], name: "index_highlights_on_chapter_id"
   end
 
   create_table "lobby_entries", force: :cascade do |t|
@@ -198,6 +213,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_025846) do
   add_foreign_key "concept_experiments", "concepts"
   add_foreign_key "concept_experiments", "experiments"
   add_foreign_key "examples", "concepts"
+  add_foreign_key "highlights", "chapters"
   add_foreign_key "lobby_entries", "users"
   add_foreign_key "phrases", "concepts"
   add_foreign_key "quiz_choices", "quizzes"
